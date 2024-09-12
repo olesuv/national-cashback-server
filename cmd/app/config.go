@@ -15,13 +15,15 @@ func loadConfigs() {
 }
 
 type Configs struct {
-	addr string
-	port string
+	addr   string
+	port   string
+	db_url string
 }
 
 func getConfigs() *Configs {
 	return &Configs{
-		addr: os.Getenv("ADDR"),
-		port: os.Getenv("PORT"),
+		addr:   os.Getenv("ADDR"),
+		port:   os.Getenv("PORT"),
+		db_url: os.Getenv("DB_URL"),
 	}
 }

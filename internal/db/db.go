@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	_ "github.com/lib/pq"
+
 	"github.com/olesuv/national-cashback-app/internal/utils"
 )
 
@@ -18,7 +20,20 @@ func DBManagerInit(connStr string) *DBManager {
 		log.Fatalf("unable to connect to the database: %v", err)
 	}
 
+	err = db.Ping()
+	if err != nil {
+		log.Fatalf("unable to ping the database: %v", err)
+	}
+
+	log.Println("db connect success")
 	return &DBManager{db: db}
+}
+
+func (dbm *DBManager) IsAlive() bool {
+	if dbm.db == nil {
+		return false
+	}
+	return dbm.db.Ping() == nil
 }
 
 func (dbm *DBManager) Close() error {
@@ -28,7 +43,7 @@ func (dbm *DBManager) Close() error {
 	return nil
 }
 
-func (dbm *DBManager) MigrateCSVtoSQL(records [][]string, tableName string, columnNames []string) error {
+func (dbm *DBManager) migrateCSVtoSQL(records [][]string, tableName string, columnNames []string) error {
 	if dbm.db == nil {
 		return fmt.Errorf("db is not initialized")
 	}
@@ -42,6 +57,7 @@ func (dbm *DBManager) MigrateCSVtoSQL(records [][]string, tableName string, colu
 	}
 	defer stmt.Close()
 
+	var record_n int = 0
 	for i, record := range records {
 		if i == 0 {
 			// skip the header row
@@ -56,11 +72,12 @@ func (dbm *DBManager) MigrateCSVtoSQL(records [][]string, tableName string, colu
 
 		_, err := stmt.Exec(args...)
 		if err != nil {
-			log.Printf("failed to insert record %v: %v", record, err)
+			log.Panicf("failed to insert record %v: %v", record, err)
 		} else {
-			fmt.Printf("inserted record: %v\n", record)
+			record_n++
 		}
 	}
 
+	log.Printf("inserted %d amount of records for %s table", record_n, tableName)
 	return nil
 }

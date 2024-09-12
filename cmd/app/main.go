@@ -5,18 +5,24 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/olesuv/national-cashback-app/internal/db"
 	"github.com/olesuv/national-cashback-app/internal/routes"
 )
 
 var configs *Configs
+var dbManager *db.DBManager
+var router http.Handler
 
 func init() {
 	loadConfigs()
 	configs = getConfigs()
+
+	dbManager = db.DBManagerInit(configs.db_url)
+	router = routes.InitRoutes()
 }
 
 func main() {
-	router := routes.InitRoutes()
+	defer dbManager.Close()
 
 	apiLink := fmt.Sprintf("%s:%s", configs.addr, configs.port)
 
