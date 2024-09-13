@@ -1,5 +1,3 @@
-import dotenv from 'dotenv';
-
 export class EnvConfigs {
   public supabaseURL: string;
 

@@ -2,6 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EnvConfigs } from './configs/env';
+import { MigrationLog } from './models/migration.log.entity';
+import { ScheduleModule } from '@nestjs/schedule';
+import { MigrationService } from './services/jobs/migration.service';
 
 @Module({
   imports: [
@@ -19,8 +22,10 @@ import { EnvConfigs } from './configs/env';
         };
       },
     }),
+    TypeOrmModule.forFeature([MigrationLog]),
+    ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [MigrationService],
 })
 export class AppModule {}

@@ -16,7 +16,7 @@ logs
 
 .node_repl_history
 
-.env*
+.env
 
 # csv files
 *.csv
