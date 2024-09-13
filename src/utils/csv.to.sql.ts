@@ -5,9 +5,24 @@ import axios from 'axios';
 
 import { MigrationLogService } from 'src/services/migration.log.service';
 
-export interface IMigrateToSQLDTO {
+export interface MigrateToSQLDTO {
   fileUrl: string;
   tableName: string;
+}
+
+export interface ReindexDTO {
+  tableName: string;
+  columnName: string;
+}
+
+export enum ColumnNames {
+  BARCODE = 'barcode',
+  BRAND = 'brand',
+}
+
+export enum TabeleNames {
+  PRODUCTS = 'products',
+  SELLERS = 'sellers',
 }
 
 export class CSVtoSQLMigration {
@@ -21,7 +36,7 @@ export class CSVtoSQLMigration {
     );
   }
 
-  public async migrateToSQL(migrationInfo: IMigrateToSQLDTO) {
+  public async migrateToSQL(migrationInfo: MigrateToSQLDTO) {
     const lastMigration = await this.migrationLogService.findByTableName({
       tableName: migrationInfo.tableName,
     });
@@ -155,5 +170,35 @@ export class CSVtoSQLMigration {
         console.error(`Error inserting batch into ${tableName}:`, error);
       }
     }
+
+    const indexName = await this.indexColumnName(tableName);
+    await this.reindexTable({
+      tableName: tableName,
+      columnName: indexName,
+    });
+  }
+
+  private async reindexTable(indexInfo: ReindexDTO) {
+    const { error: reindexError } = await this.supabase.rpc('reindex', {
+      query: `REINDEX INDEX CONCURRENTLY ${indexInfo.tableName}_${indexInfo.columnName}_idx;`,
+    });
+
+    if (reindexError) {
+      console.error(
+        `Error reindexing ${indexInfo.tableName} on ${indexInfo.columnName}:`,
+        reindexError,
+      );
+    } else {
+      console.log(
+        `Successfully reindexed ${indexInfo.tableName} on ${indexInfo.columnName}`,
+      );
+    }
+  }
+
+  private async indexColumnName(tableName: string) {
+    if (tableName === TabeleNames.PRODUCTS) return String(ColumnNames.BARCODE);
+    else if (tableName === TabeleNames.SELLERS)
+      return String(ColumnNames.BRAND);
+    else throw Error(`Unsupported table with name: '${tableName}'`);
   }
 }
