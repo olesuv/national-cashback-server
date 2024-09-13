@@ -38,7 +38,7 @@ export class MigrationService implements OnModuleInit {
   }
 
   private async runMigration(csvInfo: ICsvInfo) {
-    console.log(`migrating ${csvInfo.fileUrl} to ${csvInfo.tableName}...`);
+    console.log(`Migrating ${csvInfo.fileUrl} to ${csvInfo.tableName}...`);
 
     const csvToSQLMigration = new CSVtoSQLMigration(this.migrationLogService);
     await csvToSQLMigration.migrateToSQL({
@@ -46,7 +46,7 @@ export class MigrationService implements OnModuleInit {
       tableName: csvInfo.tableName,
     });
 
-    console.log(`migration completed for ${csvInfo.fileUrl}`);
+    console.log(`Migration completed for ${csvInfo.fileUrl}`);
   }
 
   private async runMigrations() {

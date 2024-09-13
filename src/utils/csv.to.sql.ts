@@ -45,6 +45,7 @@ export class CSVtoSQLMigration {
       currentDate.getTime() - lastMigrationDate.getTime() <
         6 * 24 * 60 * 60 * 1000
     ) {
+      console.log(`Skipping migration for ${migrationInfo.tableName}...`);
       return;
     }
 
