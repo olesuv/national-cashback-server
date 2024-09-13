@@ -2,6 +2,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
 import { CSVtoSQLMigration } from '../../utils/csv.to.sql';
+import { MigrationLogService } from '../migration.log.service';
 
 export interface ICsvInfo {
   fileUrl: string;
@@ -23,7 +24,7 @@ export class MigrationService implements OnModuleInit {
     },
   ];
 
-  constructor() {}
+  constructor(private readonly migrationLogService: MigrationLogService) {}
 
   async onModuleInit() {
     console.log('server started, running migration(csv to sql)...');
@@ -39,7 +40,7 @@ export class MigrationService implements OnModuleInit {
   private async runMigration(csvInfo: ICsvInfo) {
     console.log(`migrating ${csvInfo.fileUrl} to ${csvInfo.tableName}...`);
 
-    const csvToSQLMigration = new CSVtoSQLMigration();
+    const csvToSQLMigration = new CSVtoSQLMigration(this.migrationLogService);
     await csvToSQLMigration.migrateToSQL({
       fileUrl: csvInfo.fileUrl,
       tableName: csvInfo.tableName,

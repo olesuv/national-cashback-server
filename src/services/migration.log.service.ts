@@ -17,7 +17,7 @@ export class MigrationLogService {
   async createMigrationLog(
     createMigrationLog: IMigrationLogDTO,
   ): Promise<MigrationLog> {
-    const mbCreated = await this.findByFileName(createMigrationLog);
+    const mbCreated = await this.findByTableName(createMigrationLog);
     if (mbCreated) {
       return await this.updateMigrationLog(createMigrationLog);
     }
@@ -31,13 +31,13 @@ export class MigrationLogService {
   async updateMigrationLog(
     migrationLog: IMigrationLogDTO,
   ): Promise<MigrationLog> {
-    const existingLog = await this.findByFileName(migrationLog);
+    const existingLog = await this.findByTableName(migrationLog);
 
     existingLog.updatedAt = new Date();
     return await this.migrationLogRepo.save(existingLog);
   }
 
-  async findByFileName(migrationLog: IMigrationLogDTO): Promise<MigrationLog> {
+  async findByTableName(migrationLog: IMigrationLogDTO): Promise<MigrationLog> {
     const findMigrationLog = await this.migrationLogRepo.findOne({
       where: { tableName: migrationLog.tableName },
     });
