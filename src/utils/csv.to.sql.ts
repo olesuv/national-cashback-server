@@ -4,6 +4,7 @@ import { Readable } from 'stream';
 import axios from 'axios';
 
 import { MigrationLogService } from 'src/services/migration.log.service';
+import { ProductService } from 'src/services/product.service';
 
 export interface MigrateToSQLDTO {
   fileUrl: string;
@@ -30,7 +31,10 @@ export class CSVtoSQLMigration {
   private supabase: any;
   private readonly batchSize: number = 1000;
 
-  constructor(private readonly migrationLogService: MigrationLogService) {
+  constructor(
+    private readonly migrationLogService: MigrationLogService,
+    private readonly productService: ProductService,
+  ) {
     this.supabase = createClient(
       process.env.SUPABASE_URL as string,
       process.env.SUPABASE_KEY as string,
@@ -181,37 +185,15 @@ export class CSVtoSQLMigration {
     }
 
     const indexColumnNames = await this.getIndexColumnName(tableName);
-    await this.reindexTable({
+    await this.productService.reindexTable({
       tableName: tableName,
       columnNames: indexColumnNames,
     });
   }
 
-  private async reindexTable(indexInfo: ReindexDTO) {
-    for (const columnName of indexInfo.columnNames) {
-      const { error: reindexError } = await this.supabase.rpc(
-        `${indexInfo.tableName}.exec_sql`,
-        {
-          sql: `REINDEX INDEX CONCURRENTLY idx_${columnName};`,
-        },
-      );
-
-      if (reindexError) {
-        console.error(
-          `Error reindexing ${indexInfo.tableName} on ${columnName}:`,
-          reindexError,
-        );
-      } else {
-        console.log(
-          `Successfully reindexed ${indexInfo.tableName} on ${columnName}`,
-        );
-      }
-    }
-  }
-
   private async getIndexColumnName(tableName: string): Promise<string[]> {
     if (tableName === TabeleNames.PRODUCTS) {
-      return [(ColumnNames.BARCODE, ColumnNames.NAME)];
+      return [ColumnNames.BARCODE, ColumnNames.NAME, ColumnNames.BRAND];
     } else if (tableName === TabeleNames.SELLERS) {
       return [ColumnNames.BRAND];
     } else {

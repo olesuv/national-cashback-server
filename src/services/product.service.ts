@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from '../models/products.entity';
+import { ReindexDTO } from 'src/utils/csv.to.sql';
 
 @Injectable()
 export class ProductService {
@@ -31,5 +32,29 @@ export class ProductService {
         name: `%${productName}%`,
       })
       .getMany();
+  }
+
+  async reindexTable(indexInfo: ReindexDTO) {
+    const queryRunner =
+      this.productRepository.manager.connection.createQueryRunner();
+    await queryRunner.connect();
+
+    try {
+      for (const columnName of indexInfo.columnNames) {
+        const dropIndexSQL = `drop index if exists idx_${columnName};`;
+        const createIndexSQL = `create index idx_${columnName} on public.${indexInfo.tableName} (${columnName} nulls last) where ${columnName} is not null;`;
+
+        await queryRunner.query(dropIndexSQL);
+        await queryRunner.query(createIndexSQL);
+
+        console.log(
+          `Successfully reindexed ${indexInfo.tableName} on ${columnName}`,
+        );
+      }
+    } catch (error) {
+      console.error(`Error reindexing ${indexInfo.tableName}:`, error);
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
