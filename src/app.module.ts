@@ -8,6 +8,8 @@ import { MigrationLog } from './models/migration.log.entity';
 
 import { MigrationService } from './services/jobs/migration.service';
 import { MigrationLogService } from './services/migration.log.service';
+import { Product } from './models/products.entity';
+import { ProductService } from './services/product.service';
 
 @Module({
   imports: [
@@ -25,10 +27,10 @@ import { MigrationLogService } from './services/migration.log.service';
         };
       },
     }),
-    TypeOrmModule.forFeature([MigrationLog]),
+    TypeOrmModule.forFeature([MigrationLog, Product]),
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController],
-  providers: [MigrationService, MigrationLogService],
+  providers: [MigrationService, MigrationLogService, ProductService],
 })
 export class AppModule {}
