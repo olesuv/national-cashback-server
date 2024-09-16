@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, HttpException, Query } from '@nestjs/common';
 import { ProductService } from '../services/product.service';
 import { Product } from '../models/products.entity';
 
@@ -14,7 +14,19 @@ export class ProductController {
   }
 
   @Get('search-name')
-  async searchProducts(@Query('name') name: string): Promise<Product[]> {
-    return await this.productService.searchByProductName(name);
+  async searchProducts(
+    @Query('name') name: string,
+  ): Promise<Partial<Product>[] | HttpException> {
+    if (!name) {
+      return new HttpException('No search text was provided', 400);
+    }
+
+    const searchRes = await this.productService.searchByProductName(name);
+
+    if (!searchRes || searchRes.length === 0) {
+      return new HttpException('Nothing find', 400);
+    }
+
+    return searchRes;
   }
 }

@@ -15,13 +15,21 @@ export class ProductService {
   }
 
   async findByBrand(brand: string): Promise<Product[]> {
-    return this.productRepository.find({ where: { brand } });
+    return await this.productRepository.find({ where: { brand } });
   }
 
-  async searchByProductName(productName: string): Promise<Product[]> {
-    return this.productRepository
+  async searchByProductName(productName: string): Promise<Partial<Product>[]> {
+    return await this.productRepository
       .createQueryBuilder('product')
-      .where('product.product_name ILIKE :name', { name: `%${productName}%` })
+      .select([
+        'product.barcode',
+        'product.brand',
+        'product.product_name',
+        'product.legal_name',
+      ])
+      .where('product.product_name ILIKE :name', {
+        name: `%${productName}%`,
+      })
       .getMany();
   }
 }
