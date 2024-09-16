@@ -10,6 +10,7 @@ import { MigrationService } from './services/jobs/migration.service';
 import { MigrationLogService } from './services/migration.log.service';
 import { Product } from './models/products.entity';
 import { ProductService } from './services/product.service';
+import { ProductController } from './controllers/product.controller';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { ProductService } from './services/product.service';
     TypeOrmModule.forFeature([MigrationLog, Product]),
     ScheduleModule.forRoot(),
   ],
-  controllers: [AppController],
+  controllers: [AppController, ProductController],
   providers: [MigrationService, MigrationLogService, ProductService],
 })
 export class AppModule {}

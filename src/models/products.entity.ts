@@ -1,34 +1,34 @@
-import { Entity, Column, Index, Unique } from 'typeorm';
+import { Entity, Column, Index, Unique, PrimaryColumn } from 'typeorm';
 
 @Entity('products')
 export class Product {
-  @Index('idx_barcode')
+  @PrimaryColumn({ type: 'bigint' })
+  @Index('idx_barcode', { unique: true })
   @Unique(['uq_barcode'])
-  @Column()
   barcode: number;
 
-  @Column()
+  @Column({ nullable: true })
   brand: string;
 
   @Index('idx_product_name')
-  @Column()
+  @Column({ nullable: true })
   product_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   short_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   legal_name: string;
 
-  @Column()
+  @Column({ nullable: true })
   edrpou: string;
 
-  @Column()
+  @Column({ nullable: true })
   rnokpp: string;
 
-  @Column()
+  @Column({ nullable: true })
   updated_at: string;
 
-  @Column()
+  @Column({ nullable: true })
   created_at: string;
 }
