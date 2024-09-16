@@ -1,12 +1,12 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
-import { CSVtoSQLMigration } from '../../utils/csv.to.sql';
+import { CSVtoSQLMigration, MigrateToSQLDTO } from '../../utils/csv.to.sql';
 import { MigrationLogService } from '../migration.log.service';
 
 export interface ICsvInfo {
   fileUrl: string;
-  tableName: string;
+  tableNames: string[];
 }
 
 @Injectable()
@@ -15,19 +15,19 @@ export class MigrationService implements OnModuleInit {
     {
       fileUrl:
         'https://madeinukraine.gov.ua/files/perelik-tovariv/products.csv',
-      tableName: 'products',
+      tableNames: ['products'],
     },
     {
       fileUrl:
         'https://madeinukraine.gov.ua/files/perelik-prodavtsiv/perelik-prodavtsiv.csv',
-      tableName: 'sellers',
+      tableNames: ['sellers'],
     },
   ];
 
   constructor(private readonly migrationLogService: MigrationLogService) {}
 
   async onModuleInit() {
-    console.log('server started, running migration(csv to sql)...');
+    console.log('Running migration (csv to sql)...');
     await this.runMigrations();
   }
 
@@ -38,13 +38,16 @@ export class MigrationService implements OnModuleInit {
   }
 
   private async runMigration(csvInfo: ICsvInfo) {
-    console.log(`Migrating ${csvInfo.fileUrl} to ${csvInfo.tableName}...`);
+    console.log(
+      `Migrating ${csvInfo.fileUrl} to ${csvInfo.tableNames.join(', ')}...`,
+    );
 
     const csvToSQLMigration = new CSVtoSQLMigration(this.migrationLogService);
-    await csvToSQLMigration.migrateToSQL({
+    const migrateToSQLDTO: MigrateToSQLDTO = {
       fileUrl: csvInfo.fileUrl,
-      tableName: csvInfo.tableName,
-    });
+      tableName: csvInfo.tableNames,
+    };
+    await csvToSQLMigration.migrateToSQL(migrateToSQLDTO);
 
     console.log(`Migration completed for ${csvInfo.fileUrl}`);
   }

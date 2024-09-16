@@ -7,17 +7,18 @@ import { MigrationLogService } from 'src/services/migration.log.service';
 
 export interface MigrateToSQLDTO {
   fileUrl: string;
-  tableName: string;
+  tableName: string[];
 }
 
 export interface ReindexDTO {
   tableName: string;
-  columnName: string;
+  columnNames: string[];
 }
 
 export enum ColumnNames {
   BARCODE = 'barcode',
   BRAND = 'brand',
+  NAME = 'product_name',
 }
 
 export enum TabeleNames {
@@ -37,52 +38,56 @@ export class CSVtoSQLMigration {
   }
 
   public async migrateToSQL(migrationInfo: MigrateToSQLDTO) {
-    const lastMigration = await this.migrationLogService.findByTableName({
-      tableName: migrationInfo.tableName,
-    });
-
-    const lastUpdatedAt = lastMigration.updatedAt
-      ? new Date(lastMigration.updatedAt)
-      : null;
-    const lastCreatedAt = lastMigration.createdAt
-      ? new Date(lastMigration.createdAt)
-      : null;
-
-    const lastMigrationDate =
-      lastUpdatedAt && lastCreatedAt
-        ? new Date(Math.max(lastUpdatedAt.getTime(), lastCreatedAt.getTime()))
-        : lastUpdatedAt || lastCreatedAt;
-
-    const currentDate = new Date();
-
-    if (
-      lastMigrationDate &&
-      currentDate.getTime() - lastMigrationDate.getTime() <
-        6 * 24 * 60 * 60 * 1000
-    ) {
-      console.log(`Skipping migration for ${migrationInfo.tableName}...`);
-      return;
-    }
-
-    try {
-      const data = await this.parseCSV(migrationInfo.fileUrl);
-
-      const transformedData = this.transformHeaders(
-        migrationInfo.tableName,
-        data,
-      );
-
-      await this.insertIntoSupabaseInBatches(
-        transformedData,
-        migrationInfo.tableName,
-        this.batchSize,
-      );
-
-      await this.migrationLogService.createMigrationLog({
-        tableName: migrationInfo.tableName,
+    for (const tableName of migrationInfo.tableName) {
+      const lastMigration = await this.migrationLogService.findByTableName({
+        tableName: tableName,
       });
-    } catch (error) {
-      console.error('Error during migration CSV to SQL:', error);
+
+      const lastUpdatedAt = lastMigration?.updatedAt
+        ? new Date(lastMigration.updatedAt)
+        : null;
+      const lastCreatedAt = lastMigration?.createdAt
+        ? new Date(lastMigration.createdAt)
+        : null;
+
+      const lastMigrationDate =
+        lastUpdatedAt && lastCreatedAt
+          ? new Date(Math.max(lastUpdatedAt.getTime(), lastCreatedAt.getTime()))
+          : lastUpdatedAt || lastCreatedAt;
+
+      const currentDate = new Date();
+
+      if (
+        lastMigrationDate &&
+        currentDate.getTime() - lastMigrationDate.getTime() <
+          6 * 24 * 60 * 60 * 1000
+      ) {
+        console.log(`Skipping migration for ${tableName}...`);
+        continue;
+      }
+
+      try {
+        const data = await this.parseCSV(migrationInfo.fileUrl);
+
+        const transformedData = this.transformHeaders(tableName, data);
+
+        await this.insertIntoSupabaseInBatches(
+          transformedData,
+          tableName,
+          this.batchSize,
+        );
+
+        await this.migrationLogService.createMigrationLog({
+          tableName: tableName,
+        });
+
+        console.log(`Successfully migrated data for ${tableName}`);
+      } catch (error) {
+        console.error(
+          `Error during migration CSV to SQL for ${tableName}:`,
+          error,
+        );
+      }
     }
   }
 
@@ -167,38 +172,50 @@ export class CSVtoSQLMigration {
         .insert(batch);
 
       if (error) {
+        if (error.code === '23505') {
+          continue;
+        }
+
         console.error(`Error inserting batch into ${tableName}:`, error);
       }
     }
 
-    const indexName = await this.indexColumnName(tableName);
+    const indexColumnNames = await this.getIndexColumnName(tableName);
     await this.reindexTable({
       tableName: tableName,
-      columnName: indexName,
+      columnNames: indexColumnNames,
     });
   }
 
   private async reindexTable(indexInfo: ReindexDTO) {
-    const { error: reindexError } = await this.supabase.rpc('reindex', {
-      query: `REINDEX INDEX CONCURRENTLY ${indexInfo.tableName}_${indexInfo.columnName}_idx;`,
-    });
+    for (const columnName of indexInfo.columnNames) {
+      const { error: reindexError } = await this.supabase.rpc(
+        `${indexInfo.tableName}.exec_sql`,
+        {
+          sql: `REINDEX INDEX CONCURRENTLY idx_${columnName};`,
+        },
+      );
 
-    if (reindexError) {
-      console.error(
-        `Error reindexing ${indexInfo.tableName} on ${indexInfo.columnName}:`,
-        reindexError,
-      );
-    } else {
-      console.log(
-        `Successfully reindexed ${indexInfo.tableName} on ${indexInfo.columnName}`,
-      );
+      if (reindexError) {
+        console.error(
+          `Error reindexing ${indexInfo.tableName} on ${columnName}:`,
+          reindexError,
+        );
+      } else {
+        console.log(
+          `Successfully reindexed ${indexInfo.tableName} on ${columnName}`,
+        );
+      }
     }
   }
 
-  private async indexColumnName(tableName: string) {
-    if (tableName === TabeleNames.PRODUCTS) return String(ColumnNames.BARCODE);
-    else if (tableName === TabeleNames.SELLERS)
-      return String(ColumnNames.BRAND);
-    else throw Error(`Unsupported table with name: '${tableName}'`);
+  private async getIndexColumnName(tableName: string): Promise<string[]> {
+    if (tableName === TabeleNames.PRODUCTS) {
+      return [(ColumnNames.BARCODE, ColumnNames.NAME)];
+    } else if (tableName === TabeleNames.SELLERS) {
+      return [ColumnNames.BRAND];
+    } else {
+      throw Error(`Unsupported table with name: '${tableName}'`);
+    }
   }
 }
