@@ -11,11 +11,6 @@ export interface MigrateToSQLDTO {
   tableName: string[];
 }
 
-export interface ReindexDTO {
-  tableName: string;
-  columnNames: string[];
-}
-
 export enum ColumnNames {
   BARCODE = 'barcode',
   BRAND = 'brand',
@@ -35,10 +30,7 @@ export class CSVtoSQLMigration {
     private readonly migrationLogService: MigrationLogService,
     private readonly productService: ProductService,
   ) {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL as string,
-      process.env.SUPABASE_KEY as string,
-    );
+    this.supabase = createClient(process.env.SUPABASE_URL as string, process.env.SUPABASE_KEY as string);
   }
 
   public async migrateToSQL(migrationInfo: MigrateToSQLDTO) {
@@ -47,12 +39,8 @@ export class CSVtoSQLMigration {
         tableName: tableName,
       });
 
-      const lastUpdatedAt = lastMigration?.updatedAt
-        ? new Date(lastMigration.updatedAt)
-        : null;
-      const lastCreatedAt = lastMigration?.createdAt
-        ? new Date(lastMigration.createdAt)
-        : null;
+      const lastUpdatedAt = lastMigration?.updatedAt ? new Date(lastMigration.updatedAt) : null;
+      const lastCreatedAt = lastMigration?.createdAt ? new Date(lastMigration.createdAt) : null;
 
       const lastMigrationDate =
         lastUpdatedAt && lastCreatedAt
@@ -61,11 +49,7 @@ export class CSVtoSQLMigration {
 
       const currentDate = new Date();
 
-      if (
-        lastMigrationDate &&
-        currentDate.getTime() - lastMigrationDate.getTime() <
-          6 * 24 * 60 * 60 * 1000
-      ) {
+      if (lastMigrationDate && currentDate.getTime() - lastMigrationDate.getTime() < 6 * 24 * 60 * 60 * 1000) {
         console.log(`Skipping migration for ${tableName}...`);
         continue;
       }
@@ -75,11 +59,7 @@ export class CSVtoSQLMigration {
 
         const transformedData = this.transformHeaders(tableName, data);
 
-        await this.insertIntoSupabaseInBatches(
-          transformedData,
-          tableName,
-          this.batchSize,
-        );
+        await this.insertIntoSupabaseInBatches(transformedData, tableName, this.batchSize);
 
         await this.migrationLogService.createMigrationLog({
           tableName: tableName,
@@ -87,10 +67,7 @@ export class CSVtoSQLMigration {
 
         console.log(`Successfully migrated data for ${tableName}`);
       } catch (error) {
-        console.error(
-          `Error during migration CSV to SQL for ${tableName}:`,
-          error,
-        );
+        console.error(`Error during migration CSV to SQL for ${tableName}:`, error);
       }
     }
   }
@@ -163,17 +140,11 @@ export class CSVtoSQLMigration {
     });
   }
 
-  private async insertIntoSupabaseInBatches(
-    data: any[],
-    tableName: string,
-    batchSize: number,
-  ) {
+  private async insertIntoSupabaseInBatches(data: any[], tableName: string, batchSize: number) {
     for (let i = 0; i < data.length; i += batchSize) {
       const batch = data.slice(i, i + batchSize);
 
-      const { data: insertedData, error } = await this.supabase
-        .from(tableName)
-        .insert(batch);
+      const { data: insertedData, error } = await this.supabase.from(tableName).insert(batch);
 
       if (error) {
         if (error.code === '23505') {

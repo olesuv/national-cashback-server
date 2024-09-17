@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from '../models/products.entity';
-import { ReindexDTO } from 'src/utils/csv.to.sql';
+
+export interface ReindexDTO {
+  tableName: string;
+  columnNames: string[];
+}
 
 @Injectable()
 export class ProductService {
@@ -19,19 +23,10 @@ export class ProductService {
     return await this.productRepository.find({ where: { brand } });
   }
 
-  async searchByProductName(
-    productName: string,
-    limit: number,
-    offset: number,
-  ): Promise<Partial<Product>[]> {
+  async searchByProductName(productName: string, limit: number, offset: number): Promise<Partial<Product>[]> {
     return await this.productRepository
       .createQueryBuilder('product')
-      .select([
-        'product.barcode',
-        'product.brand',
-        'product.product_name',
-        'product.legal_name',
-      ])
+      .select(['product.barcode', 'product.brand', 'product.product_name', 'product.legal_name'])
       .where('product.product_name ILIKE :name', {
         name: `%${productName}%`,
       })
@@ -41,8 +36,7 @@ export class ProductService {
   }
 
   async reindexTable(indexInfo: ReindexDTO) {
-    const queryRunner =
-      this.productRepository.manager.connection.createQueryRunner();
+    const queryRunner = this.productRepository.manager.connection.createQueryRunner();
     await queryRunner.connect();
 
     try {
@@ -53,9 +47,7 @@ export class ProductService {
         await queryRunner.query(dropIndexSQL);
         await queryRunner.query(createIndexSQL);
 
-        console.log(
-          `Successfully reindexed ${indexInfo.tableName} on ${columnName}`,
-        );
+        console.log(`Successfully reindexed ${indexInfo.tableName} on ${columnName}`);
       }
     } catch (error) {
       console.error(`Error reindexing ${indexInfo.tableName}:`, error);
