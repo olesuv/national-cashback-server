@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, Query } from '@nestjs/common';
+import { Controller, Get, HttpException, NotFoundException, Query } from '@nestjs/common';
 import { ProductService } from '../services/product.service';
 import { Product } from '../models/products.entity';
 import { searchDefaultParams } from '../constants/product';
@@ -17,9 +17,9 @@ export class ProductController {
     @Query('name') name: string,
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
-  ): Promise<Partial<Product>[] | HttpException> {
+  ): Promise<Partial<Product>[]> {
     if (!name) {
-      return new HttpException('No search text was provided', 400);
+      throw new NotFoundException('No search text was provided');
     }
 
     const parsedLimit = limit ? parseInt(limit, 10) : searchDefaultParams.limit;
@@ -28,7 +28,7 @@ export class ProductController {
     const searchRes = await this.productService.searchByProductName(name, parsedLimit, parsedOffset);
 
     if (!searchRes || searchRes.length === 0) {
-      return new HttpException('Nothing find', 400);
+      throw new NotFoundException('Nothing found');
     }
 
     return searchRes;
