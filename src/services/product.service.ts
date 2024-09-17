@@ -19,7 +19,11 @@ export class ProductService {
     return await this.productRepository.find({ where: { brand } });
   }
 
-  async searchByProductName(productName: string): Promise<Partial<Product>[]> {
+  async searchByProductName(
+    productName: string,
+    limit: number,
+    offset: number,
+  ): Promise<Partial<Product>[]> {
     return await this.productRepository
       .createQueryBuilder('product')
       .select([
@@ -31,6 +35,8 @@ export class ProductService {
       .where('product.product_name ILIKE :name', {
         name: `%${productName}%`,
       })
+      .limit(limit)
+      .offset(offset)
       .getMany();
   }
 
