@@ -55,4 +55,12 @@ export class ProductService {
       await queryRunner.release();
     }
   }
+
+  async findEctProductInfo(barcode: number): Promise<Partial<Product> | undefined> {
+    return await this.productRepository
+      .createQueryBuilder('product')
+      .select(['product.edrpou', 'product.rnokpp'])
+      .where('product.barcode = :barcode', { barcode })
+      .getOne();
+  }
 }

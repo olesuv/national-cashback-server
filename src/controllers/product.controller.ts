@@ -33,4 +33,19 @@ export class ProductController {
 
     return searchRes;
   }
+
+  @Get('search-ect-info')
+  async searchEctProductInfo(@Query('barcode') barcode: number): Promise<Partial<Product>> {
+    if (!barcode) {
+      throw new NotFoundException('No barcode was provided');
+    }
+
+    const searchRes = await this.productService.findEctProductInfo(barcode);
+
+    if (!searchRes) {
+      throw new NotFoundException('Nothing found');
+    }
+
+    return searchRes;
+  }
 }
