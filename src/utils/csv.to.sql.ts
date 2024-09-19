@@ -59,11 +59,11 @@ export class CSVtoSQLMigration {
 
         const transformedData = this.transformHeaders(tableName, data);
 
+        await this.deleteTableData(tableName, ColumnNames.BRAND);
+
         await this.insertIntoSupabaseInBatches(transformedData, tableName, this.batchSize);
 
-        await this.migrationLogService.createMigrationLog({
-          tableName: tableName,
-        });
+        await this.migrationLogService.createMigrationLog({ tableName: tableName });
 
         console.log(`Successfully migrated data for ${tableName}`);
       } catch (error) {
@@ -87,6 +87,7 @@ export class CSVtoSQLMigration {
   private sellersHeaderMap = {
     Бренд: 'brand',
     'Юридична назва': 'legal_name',
+    Адрес: 'address',
     ЄДРПОУ: 'edrpou',
     РНОКПП: 'rnokpp',
     'Торгових точок': 'shops_n',
@@ -169,6 +170,20 @@ export class CSVtoSQLMigration {
       return [ColumnNames.BRAND];
     } else {
       throw Error(`Unsupported table with name: '${tableName}'`);
+    }
+  }
+
+  private async deleteTableData(tableName: string, mainColumnName: string) {
+    try {
+      const { error } = await this.supabase.from(tableName).delete().neq(mainColumnName, 0);
+
+      if (error) {
+        throw new Error(`Error deleting data from ${tableName}: ${error.message}`);
+      }
+
+      console.log(`Deleted all data from ${tableName}`);
+    } catch (error) {
+      console.error(`Error deleting data from ${tableName}: ${error}`);
     }
   }
 }
