@@ -16,7 +16,11 @@ export class ProductService {
   ) {}
 
   async findByBarcode(barcode: number): Promise<Product | undefined> {
-    return await this.productRepository.findOne({ where: { barcode } });
+    return await this.productRepository
+      .createQueryBuilder('product')
+      .select(['product.barcode', 'product.brand', 'product.product_name', 'product.legal_name'])
+      .where('product.barcode = :barcode', { barcode })
+      .getOne();
   }
 
   async findByBrand(brand: string): Promise<Product[]> {

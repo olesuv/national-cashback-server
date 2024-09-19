@@ -9,7 +9,17 @@ export class ProductController {
 
   @Get('search-barcode')
   async searchByBarcode(@Query('barcode') userBarcode: number): Promise<Product> {
-    return await this.productService.findByBarcode(userBarcode);
+    if (!userBarcode) {
+      throw new NotFoundException('No barcode was provided');
+    }
+
+    const searchRes = await this.productService.findByBarcode(userBarcode);
+
+    if (!searchRes) {
+      throw new NotFoundException('Nothing found');
+    }
+
+    return searchRes;
   }
 
   @Get('search-name')
