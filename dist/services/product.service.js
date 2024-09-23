@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const products_entity_1 = require("../models/products.entity");
+const db_queries_1 = require("../constants/db.queries");
 let ProductService = class ProductService {
     constructor(productRepository) {
         this.productRepository = productRepository;
@@ -24,7 +25,7 @@ let ProductService = class ProductService {
     async findByBarcode(barcode) {
         return await this.productRepository
             .createQueryBuilder('product')
-            .select(['product.barcode', 'product.brand', 'product.product_name', 'product.legal_name'])
+            .select(db_queries_1.SEARCH_COLUMNS)
             .where('product.barcode = :barcode', { barcode })
             .getOne();
     }
@@ -34,7 +35,7 @@ let ProductService = class ProductService {
     async searchByProductName(productName, limit, offset) {
         return await this.productRepository
             .createQueryBuilder('product')
-            .select(['product.barcode', 'product.brand', 'product.product_name', 'product.legal_name'])
+            .select(db_queries_1.SEARCH_COLUMNS)
             .where('product.product_name ILIKE :name', {
             name: `%${productName}%`,
         })
@@ -64,7 +65,7 @@ let ProductService = class ProductService {
     async findEctProductInfo(barcode) {
         return await this.productRepository
             .createQueryBuilder('product')
-            .select(['product.edrpou', 'product.rnokpp'])
+            .select(db_queries_1.EXT_INFO_COLUMNS)
             .where('product.barcode = :barcode', { barcode })
             .getOne();
     }

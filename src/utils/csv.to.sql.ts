@@ -5,22 +5,14 @@ import axios from 'axios';
 
 import { MigrationLogService } from 'src/services/migration.log.service';
 import { ProductService } from 'src/services/product.service';
-
-export interface MigrateToSQLDTO {
-  fileUrl: string;
-  tableName: string[];
-}
-
-export enum ColumnNames {
-  BARCODE = 'barcode',
-  BRAND = 'brand',
-  NAME = 'product_name',
-}
-
-export enum TabeleNames {
-  PRODUCTS = 'products',
-  SELLERS = 'sellers',
-}
+import {
+  ColumnNames,
+  MigrateToSQLDTO,
+  productsdHeaderMap,
+  sellersHeaderMap,
+  TabeleNames,
+} from 'src/constants/csv.to.sql';
+import { DuplicateValuesErrorCode } from 'src/constants/supabase.errors';
 
 export class CSVtoSQLMigration {
   private supabase: any;
@@ -72,35 +64,12 @@ export class CSVtoSQLMigration {
     }
   }
 
-  private productsdHeaderMap = {
-    'Штрих-код': 'barcode',
-    Бренд: 'brand',
-    'Назва товару': 'product_name',
-    'Коротка назва': 'short_name',
-    'Юридична назва': 'legal_name',
-    ЄДРПОУ: 'edrpou',
-    РНОКПП: 'rnokpp',
-    Оновлено: 'updated_at',
-    Створено: 'created_at',
-  };
-
-  private sellersHeaderMap = {
-    Бренд: 'brand',
-    'Юридична назва': 'legal_name',
-    Адрес: 'address',
-    ЄДРПОУ: 'edrpou',
-    РНОКПП: 'rnokpp',
-    'Торгових точок': 'shops_n',
-    Оновлено: 'updated_at',
-    Створено: 'created_at',
-  };
-
   private transformHeaders(tableName: string, data: any[]): any[] {
     let mapName = {};
     if (tableName === 'products') {
-      mapName = this.productsdHeaderMap;
+      mapName = productsdHeaderMap;
     } else if (tableName === 'sellers') {
-      mapName = this.sellersHeaderMap;
+      mapName = sellersHeaderMap;
     } else {
       throw new Error('No available table name selected');
     }
@@ -145,10 +114,10 @@ export class CSVtoSQLMigration {
     for (let i = 0; i < data.length; i += batchSize) {
       const batch = data.slice(i, i + batchSize);
 
-      const { data: insertedData, error } = await this.supabase.from(tableName).insert(batch);
+      const { error } = await this.supabase.from(tableName).insert(batch);
 
       if (error) {
-        if (error.code === '23505') {
+        if (error.code === DuplicateValuesErrorCode) {
           continue;
         }
 

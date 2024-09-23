@@ -7,17 +7,14 @@ class DB {
     }
     async dbInit() {
         try {
-            const { data, error } = await this.supabase
-                .from("some_table")
-                .select("*")
-                .limit(1);
+            const { error } = await this.supabase.from('some_table').select('*').limit(1);
             if (error) {
                 throw new Error(`failed to connect to the database: ${error.message}`);
             }
-            console.log("successfully connected to db");
+            console.log('successfully connected to db');
         }
         catch (error) {
-            console.error("error initializing db connection:", error);
+            console.error('error initializing db connection:', error);
             throw error;
         }
     }

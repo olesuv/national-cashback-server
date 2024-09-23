@@ -16,7 +16,8 @@ logs
 
 .node_repl_history
 
-.env.*
-!.env.*.example
+# envs
+**/.env*
+!**/.env.*example
 
 # /dist

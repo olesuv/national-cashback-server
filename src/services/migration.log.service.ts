@@ -14,9 +14,7 @@ export class MigrationLogService {
     private migrationLogRepo: Repository<MigrationLog>,
   ) {}
 
-  async createMigrationLog(
-    createMigrationLog: IMigrationLogDTO,
-  ): Promise<MigrationLog> {
+  async createMigrationLog(createMigrationLog: IMigrationLogDTO): Promise<MigrationLog> {
     const mbCreated = await this.findByTableName(createMigrationLog);
     if (mbCreated) {
       return await this.updateMigrationLog(createMigrationLog);
@@ -28,9 +26,7 @@ export class MigrationLogService {
     return await this.migrationLogRepo.save(newMigrationLog);
   }
 
-  async updateMigrationLog(
-    migrationLog: IMigrationLogDTO,
-  ): Promise<MigrationLog> {
+  async updateMigrationLog(migrationLog: IMigrationLogDTO): Promise<MigrationLog> {
     const existingLog = await this.findByTableName(migrationLog);
 
     existingLog.updatedAt = new Date();
@@ -43,9 +39,7 @@ export class MigrationLogService {
     });
 
     if (!findMigrationLog) {
-      throw new NotFoundException(
-        `Migration log for file ${migrationLog.tableName} not found`,
-      );
+      throw new NotFoundException(`Migration log for file ${migrationLog.tableName} not found`);
     }
 
     return findMigrationLog;

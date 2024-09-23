@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, NotFoundException, Query } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Query } from '@nestjs/common';
 import { ProductService } from '../services/product.service';
 import { Product } from '../models/products.entity';
 import { searchDefaultParams } from '../constants/product';

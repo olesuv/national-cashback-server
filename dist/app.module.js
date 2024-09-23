@@ -8,16 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
-const app_controller_1 = require("./app.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const schedule_1 = require("@nestjs/schedule");
-const env_1 = require("./configs/env");
 const migration_log_entity_1 = require("./models/migration.log.entity");
+const products_entity_1 = require("./models/products.entity");
 const migration_service_1 = require("./services/jobs/migration.service");
 const migration_log_service_1 = require("./services/migration.log.service");
-const products_entity_1 = require("./models/products.entity");
 const product_service_1 = require("./services/product.service");
+const app_controller_1 = require("./controllers/app.controller");
 const product_controller_1 = require("./controllers/product.controller");
+const env_1 = require("./configs/env");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;

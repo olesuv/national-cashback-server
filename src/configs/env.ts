@@ -9,11 +9,11 @@ export class EnvConfigs {
     this.envMode = process.env.MODE;
 
     if (!this.supabaseURL || this.supabaseURL === '') {
-      throw new Error('missing required environment variables');
+      throw new Error('Missing required environment variables');
     }
 
     if (!this.envMode || this.envMode === '') {
-      throw new Error('missing required environment variables');
+      throw new Error('Missing required environment variables');
     } else if (this.envMode && this.envMode === 'dev') {
       this.devMode = true;
     } else if (this.envMode && this.envMode === 'prod') {

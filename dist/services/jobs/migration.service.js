@@ -13,6 +13,7 @@ exports.MigrationService = void 0;
 const common_1 = require("@nestjs/common");
 const schedule_1 = require("@nestjs/schedule");
 const csv_to_sql_1 = require("../../utils/csv.to.sql");
+const csv_to_sql_2 = require("../../constants/csv.to.sql");
 const migration_log_service_1 = require("../migration.log.service");
 const product_service_1 = require("../product.service");
 let MigrationService = class MigrationService {
@@ -21,12 +22,12 @@ let MigrationService = class MigrationService {
         this.productService = productService;
         this.csvFilesInfo = [
             {
-                fileUrl: 'https://madeinukraine.gov.ua/files/perelik-tovariv/products.csv',
-                tableNames: ['products'],
+                fileUrl: csv_to_sql_2.PARSE_URLS.productsUrl,
+                tableNames: [csv_to_sql_2.TabeleNames.PRODUCTS],
             },
             {
-                fileUrl: 'https://madeinukraine.gov.ua/files/perelik-prodavtsiv/perelik-prodavtsiv.csv',
-                tableNames: ['sellers'],
+                fileUrl: csv_to_sql_2.PARSE_URLS.sellersUrl,
+                tableNames: [csv_to_sql_2.TabeleNames.SELLERS],
             },
         ];
     }
@@ -35,7 +36,7 @@ let MigrationService = class MigrationService {
         await this.runMigrations();
     }
     async runDailyMigration() {
-        console.log('started daily migration');
+        console.log('Started daily migration');
         await this.runMigrations();
     }
     async runMigration(csvInfo) {

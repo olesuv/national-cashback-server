@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from '../models/products.entity';
+import { EXT_INFO_COLUMNS, SEARCH_COLUMNS } from 'src/constants/db.queries';
 
 export interface ReindexDTO {
   tableName: string;
@@ -18,7 +19,7 @@ export class ProductService {
   async findByBarcode(barcode: number): Promise<Product | undefined> {
     return await this.productRepository
       .createQueryBuilder('product')
-      .select(['product.barcode', 'product.brand', 'product.product_name', 'product.legal_name'])
+      .select(SEARCH_COLUMNS)
       .where('product.barcode = :barcode', { barcode })
       .getOne();
   }
@@ -30,7 +31,7 @@ export class ProductService {
   async searchByProductName(productName: string, limit: number, offset: number): Promise<Partial<Product>[]> {
     return await this.productRepository
       .createQueryBuilder('product')
-      .select(['product.barcode', 'product.brand', 'product.product_name', 'product.legal_name'])
+      .select(SEARCH_COLUMNS)
       .where('product.product_name ILIKE :name', {
         name: `%${productName}%`,
       })
@@ -63,7 +64,7 @@ export class ProductService {
   async findEctProductInfo(barcode: number): Promise<Partial<Product> | undefined> {
     return await this.productRepository
       .createQueryBuilder('product')
-      .select(['product.edrpou', 'product.rnokpp'])
+      .select(EXT_INFO_COLUMNS)
       .where('product.barcode = :barcode', { barcode })
       .getOne();
   }

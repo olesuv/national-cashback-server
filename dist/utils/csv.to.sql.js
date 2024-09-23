@@ -1,46 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CSVtoSQLMigration = exports.TabeleNames = exports.ColumnNames = void 0;
+exports.CSVtoSQLMigration = void 0;
 const supabase_js_1 = require("@supabase/supabase-js");
 const fast_csv_1 = require("fast-csv");
 const axios_1 = require("axios");
-var ColumnNames;
-(function (ColumnNames) {
-    ColumnNames["BARCODE"] = "barcode";
-    ColumnNames["BRAND"] = "brand";
-    ColumnNames["NAME"] = "product_name";
-})(ColumnNames || (exports.ColumnNames = ColumnNames = {}));
-var TabeleNames;
-(function (TabeleNames) {
-    TabeleNames["PRODUCTS"] = "products";
-    TabeleNames["SELLERS"] = "sellers";
-})(TabeleNames || (exports.TabeleNames = TabeleNames = {}));
+const csv_to_sql_1 = require("../constants/csv.to.sql");
+const supabase_errors_1 = require("../constants/supabase.errors");
 class CSVtoSQLMigration {
     constructor(migrationLogService, productService) {
         this.migrationLogService = migrationLogService;
         this.productService = productService;
         this.batchSize = 1000;
-        this.productsdHeaderMap = {
-            'Штрих-код': 'barcode',
-            Бренд: 'brand',
-            'Назва товару': 'product_name',
-            'Коротка назва': 'short_name',
-            'Юридична назва': 'legal_name',
-            ЄДРПОУ: 'edrpou',
-            РНОКПП: 'rnokpp',
-            Оновлено: 'updated_at',
-            Створено: 'created_at',
-        };
-        this.sellersHeaderMap = {
-            Бренд: 'brand',
-            'Юридична назва': 'legal_name',
-            Адрес: 'address',
-            ЄДРПОУ: 'edrpou',
-            РНОКПП: 'rnokpp',
-            'Торгових точок': 'shops_n',
-            Оновлено: 'updated_at',
-            Створено: 'created_at',
-        };
         this.supabase = (0, supabase_js_1.createClient)(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
     }
     async migrateToSQL(migrationInfo) {
@@ -61,7 +31,7 @@ class CSVtoSQLMigration {
             try {
                 const data = await this.parseCSV(migrationInfo.fileUrl);
                 const transformedData = this.transformHeaders(tableName, data);
-                await this.deleteTableData(tableName, ColumnNames.BRAND);
+                await this.deleteTableData(tableName, csv_to_sql_1.ColumnNames.BRAND);
                 await this.insertIntoSupabaseInBatches(transformedData, tableName, this.batchSize);
                 await this.migrationLogService.createMigrationLog({ tableName: tableName });
                 console.log(`Successfully migrated data for ${tableName}`);
@@ -74,10 +44,10 @@ class CSVtoSQLMigration {
     transformHeaders(tableName, data) {
         let mapName = {};
         if (tableName === 'products') {
-            mapName = this.productsdHeaderMap;
+            mapName = csv_to_sql_1.productsdHeaderMap;
         }
         else if (tableName === 'sellers') {
-            mapName = this.sellersHeaderMap;
+            mapName = csv_to_sql_1.sellersHeaderMap;
         }
         else {
             throw new Error('No available table name selected');
@@ -114,9 +84,9 @@ class CSVtoSQLMigration {
     async insertIntoSupabaseInBatches(data, tableName, batchSize) {
         for (let i = 0; i < data.length; i += batchSize) {
             const batch = data.slice(i, i + batchSize);
-            const { data: insertedData, error } = await this.supabase.from(tableName).insert(batch);
+            const { error } = await this.supabase.from(tableName).insert(batch);
             if (error) {
-                if (error.code === '23505') {
+                if (error.code === supabase_errors_1.DuplicateValuesErrorCode) {
                     continue;
                 }
                 console.error(`Error inserting batch into ${tableName}:`, error);
@@ -129,11 +99,11 @@ class CSVtoSQLMigration {
         });
     }
     async getIndexColumnName(tableName) {
-        if (tableName === TabeleNames.PRODUCTS) {
-            return [ColumnNames.BARCODE, ColumnNames.NAME, ColumnNames.BRAND];
+        if (tableName === csv_to_sql_1.TabeleNames.PRODUCTS) {
+            return [csv_to_sql_1.ColumnNames.BARCODE, csv_to_sql_1.ColumnNames.NAME, csv_to_sql_1.ColumnNames.BRAND];
         }
-        else if (tableName === TabeleNames.SELLERS) {
-            return [ColumnNames.BRAND];
+        else if (tableName === csv_to_sql_1.TabeleNames.SELLERS) {
+            return [csv_to_sql_1.ColumnNames.BRAND];
         }
         else {
             throw Error(`Unsupported table with name: '${tableName}'`);
