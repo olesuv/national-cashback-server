@@ -2,15 +2,24 @@ import { Controller, Get, NotFoundException, Query } from '@nestjs/common';
 import { ProductService } from '../services/product.service';
 import { Product } from '../models/products.entity';
 import { searchDefaultParams } from '../constants/product';
+import { RedisService } from 'src/services/redis.service';
 
 @Controller('products')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly redisService: RedisService,
+  ) {}
 
   @Get('search-barcode')
   async searchByBarcode(@Query('barcode') userBarcode: number): Promise<Product> {
     if (!userBarcode) {
       throw new NotFoundException('No barcode was provided');
+    }
+
+    const cachedRes = await this.redisService.getBarcodeResults(userBarcode);
+    if (cachedRes) {
+      return cachedRes;
     }
 
     const searchRes = await this.productService.findByBarcode(userBarcode);
@@ -19,6 +28,7 @@ export class ProductController {
       throw new NotFoundException('Nothing found');
     }
 
+    await this.redisService.insertBarcodeResults(userBarcode, searchRes);
     return searchRes;
   }
 
