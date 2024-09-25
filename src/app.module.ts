@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -16,6 +16,7 @@ import { AppController } from './controllers/app.controller';
 import { ProductController } from './controllers/product.controller';
 
 import { EnvConfigs } from './configs/env';
+import { RateLimitMiddleware } from './middleware';
 
 @Module({
   imports: [
@@ -41,4 +42,8 @@ import { EnvConfigs } from './configs/env';
   controllers: [AppController, ProductController],
   providers: [MigrationService, MigrationLogService, ProductService, RedisService, CacheConfigService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RateLimitMiddleware).forRoutes('*');
+  }
+}

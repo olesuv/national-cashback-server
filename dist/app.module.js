@@ -21,7 +21,11 @@ const redis_service_1 = require("./services/redis.service");
 const app_controller_1 = require("./controllers/app.controller");
 const product_controller_1 = require("./controllers/product.controller");
 const env_1 = require("./configs/env");
+const middleware_1 = require("./middleware");
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer.apply(middleware_1.RateLimitMiddleware).forRoutes('*');
+    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
