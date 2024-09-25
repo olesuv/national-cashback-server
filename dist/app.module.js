@@ -10,11 +10,14 @@ exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const schedule_1 = require("@nestjs/schedule");
+const cache_manager_1 = require("@nestjs/cache-manager");
 const migration_log_entity_1 = require("./models/migration.log.entity");
 const products_entity_1 = require("./models/products.entity");
 const migration_service_1 = require("./services/jobs/migration.service");
 const migration_log_service_1 = require("./services/migration.log.service");
 const product_service_1 = require("./services/product.service");
+const redis_config_service_1 = require("./services/redis.config.service");
+const redis_service_1 = require("./services/redis.service");
 const app_controller_1 = require("./controllers/app.controller");
 const product_controller_1 = require("./controllers/product.controller");
 const env_1 = require("./configs/env");
@@ -38,11 +41,12 @@ exports.AppModule = AppModule = __decorate([
                     };
                 },
             }),
+            cache_manager_1.CacheModule.registerAsync({ useClass: redis_config_service_1.CacheConfigService }),
             typeorm_1.TypeOrmModule.forFeature([migration_log_entity_1.MigrationLog, products_entity_1.Product]),
             schedule_1.ScheduleModule.forRoot(),
         ],
         controllers: [app_controller_1.AppController, product_controller_1.ProductController],
-        providers: [migration_service_1.MigrationService, migration_log_service_1.MigrationLogService, product_service_1.ProductService],
+        providers: [migration_service_1.MigrationService, migration_log_service_1.MigrationLogService, product_service_1.ProductService, redis_service_1.RedisService, redis_config_service_1.CacheConfigService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
