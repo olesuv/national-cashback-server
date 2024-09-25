@@ -6,7 +6,7 @@ import { REDIS_TTL } from 'src/constants/redis.config';
 export class CacheConfigService implements CacheOptionsFactory {
   createCacheOptions(): CacheModuleOptions {
     return {
-      url: process.env.REDIS_URL,
+      url: `${process.env.REDIS_URL}:${process.env.REDIS_PORT}`,
       ttl: REDIS_TTL,
     };
   }
