@@ -45,12 +45,18 @@ export class ProductController {
     const parsedLimit = limit ? parseInt(limit, 10) : searchDefaultParams.limit;
     const parsedOffset = offset ? parseInt(offset, 10) : searchDefaultParams.offset;
 
+    const cachedRes = await this.redisService.getSearchResults(name, parsedLimit, parsedOffset);
+    if (cachedRes) {
+      return cachedRes;
+    }
+
     const searchRes = await this.productService.searchByProductName(name, parsedLimit, parsedOffset);
 
     if (!searchRes || searchRes.length === 0) {
       throw new NotFoundException('Nothing found');
     }
 
+    await this.redisService.insertSearchResults(name, searchRes, parsedLimit, parsedOffset);
     return searchRes;
   }
 

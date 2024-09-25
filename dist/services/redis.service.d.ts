@@ -5,6 +5,6 @@ export declare class RedisService {
     constructor(cacheManager: Cache);
     getBarcodeResults(searchedBarcode: number): Promise<Product | null>;
     insertBarcodeResults(searchedBarcode: number, barcodeData: Product): Promise<void>;
-    getSearchResults(searchQuery: string): Promise<Product[] | null>;
-    insertSearchResults(searchQuery: string, searchResults: Product[]): Promise<void>;
+    getSearchResults(searchQuery: string, limit: number, offset: number): Promise<Partial<Product>[] | null>;
+    insertSearchResults(searchQuery: string, searchResults: Partial<Product>[], limit: number, offset: number): Promise<void>;
 }

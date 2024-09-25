@@ -26,12 +26,12 @@ let RedisService = class RedisService {
     async insertBarcodeResults(searchedBarcode, barcodeData) {
         await this.cacheManager.set(`barcode_${searchedBarcode}`, barcodeData);
     }
-    async getSearchResults(searchQuery) {
-        const result = await this.cacheManager.get(searchQuery);
+    async getSearchResults(searchQuery, limit, offset) {
+        const result = await this.cacheManager.get(`search_${searchQuery}_${limit}_${offset}`);
         return result || null;
     }
-    async insertSearchResults(searchQuery, searchResults) {
-        await this.cacheManager.set(searchQuery, searchResults);
+    async insertSearchResults(searchQuery, searchResults, limit, offset) {
+        await this.cacheManager.set(`search_${searchQuery}_${limit}_${offset}`, searchResults);
     }
 };
 exports.RedisService = RedisService;

@@ -12,7 +12,7 @@ const redis_config_1 = require("../constants/redis.config");
 let CacheConfigService = class CacheConfigService {
     createCacheOptions() {
         return {
-            url: `redis://default:UN0w24rI41nREpv9zLfcHH4ABUacDfNG@redis-11289.c300.eu-central-1-1.ec2.redns.redis-cloud.com:11289`,
+            url: process.env.REDIS_URL,
             ttl: redis_config_1.REDIS_TTL,
         };
     }
