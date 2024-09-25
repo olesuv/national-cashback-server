@@ -7,4 +7,6 @@ export declare class RedisService {
     insertBarcodeResults(searchedBarcode: number, barcodeData: Product): Promise<void>;
     getSearchResults(searchQuery: string, limit: number, offset: number): Promise<Partial<Product>[] | null>;
     insertSearchResults(searchQuery: string, searchResults: Partial<Product>[], limit: number, offset: number): Promise<void>;
+    getEctProductInfo(barcode: number): Promise<Partial<Product>>;
+    setEctProductInfo(barcode: number, product_ect_info: Partial<Product>): Promise<void>;
 }

@@ -21,7 +21,20 @@ export class RedisService {
     return result || null;
   }
 
-  async insertSearchResults(searchQuery: string, searchResults: Partial<Product>[], limit: number, offset: number) {
+  async insertSearchResults(
+    searchQuery: string,
+    searchResults: Partial<Product>[],
+    limit: number,
+    offset: number,
+  ): Promise<void> {
     await this.cacheManager.set(`search_${searchQuery}_${limit}_${offset}`, searchResults);
+  }
+
+  async getEctProductInfo(barcode: number): Promise<Partial<Product>> {
+    return await this.cacheManager.get<Partial<Product>>(`product_ect_info_${barcode}`);
+  }
+
+  async setEctProductInfo(barcode: number, product_ect_info: Partial<Product>): Promise<void> {
+    await this.cacheManager.set<Partial<Product>>(`product_ect_info_${barcode}`, product_ect_info);
   }
 }

@@ -66,12 +66,18 @@ export class ProductController {
       throw new NotFoundException('No barcode was provided');
     }
 
+    const cachedProductInfo = await this.redisService.getEctProductInfo(barcode);
+    if (cachedProductInfo) {
+      return cachedProductInfo;
+    }
+
     const searchRes = await this.productService.findEctProductInfo(barcode);
 
     if (!searchRes) {
       throw new NotFoundException('Nothing found');
     }
 
+    await this.redisService.setEctProductInfo(barcode, searchRes);
     return searchRes;
   }
 }

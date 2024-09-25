@@ -58,10 +58,15 @@ let ProductController = class ProductController {
         if (!barcode) {
             throw new common_1.NotFoundException('No barcode was provided');
         }
+        const cachedProductInfo = await this.redisService.getEctProductInfo(barcode);
+        if (cachedProductInfo) {
+            return cachedProductInfo;
+        }
         const searchRes = await this.productService.findEctProductInfo(barcode);
         if (!searchRes) {
             throw new common_1.NotFoundException('Nothing found');
         }
+        await this.redisService.setEctProductInfo(barcode, searchRes);
         return searchRes;
     }
 };

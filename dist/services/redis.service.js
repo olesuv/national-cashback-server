@@ -33,6 +33,12 @@ let RedisService = class RedisService {
     async insertSearchResults(searchQuery, searchResults, limit, offset) {
         await this.cacheManager.set(`search_${searchQuery}_${limit}_${offset}`, searchResults);
     }
+    async getEctProductInfo(barcode) {
+        return await this.cacheManager.get(`product_ect_info_${barcode}`);
+    }
+    async setEctProductInfo(barcode, product_ect_info) {
+        await this.cacheManager.set(`product_ect_info_${barcode}`, product_ect_info);
+    }
 };
 exports.RedisService = RedisService;
 exports.RedisService = RedisService = __decorate([
