@@ -8,13 +8,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CacheConfigService = void 0;
 const common_1 = require("@nestjs/common");
-const redisStore = require("cache-manager-redis-store");
+const redis_config_1 = require("../constants/redis.config");
 let CacheConfigService = class CacheConfigService {
     createCacheOptions() {
         return {
-            store: redisStore,
             url: `redis://default:UN0w24rI41nREpv9zLfcHH4ABUacDfNG@redis-11289.c300.eu-central-1-1.ec2.redns.redis-cloud.com:11289`,
-            ttl: 24,
+            ttl: redis_config_1.REDIS_TTL,
         };
     }
 };
