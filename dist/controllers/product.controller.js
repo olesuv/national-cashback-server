@@ -28,7 +28,7 @@ let ProductController = class ProductController {
             throw new common_1.NotFoundException('No barcode was provided');
         }
         if (regexes_1.ruRegex.test(String(userBarcode))) {
-            throw new common_1.NotFoundException('Russian product');
+            throw new common_1.NotFoundException('Rus product');
         }
         const cachedRes = await this.redisService.getBarcodeResults(userBarcode);
         if (cachedRes) {
@@ -46,7 +46,7 @@ let ProductController = class ProductController {
             throw new common_1.NotFoundException('No search text was provided');
         }
         if (regexes_1.ruRegex.test(name)) {
-            throw new common_1.NotFoundException('Russian product');
+            throw new common_1.NotFoundException('Rus product');
         }
         const parsedLimit = limit ? parseInt(limit, 10) : product_1.searchDefaultParams.limit;
         const parsedOffset = offset ? parseInt(offset, 10) : product_1.searchDefaultParams.offset;
@@ -66,7 +66,7 @@ let ProductController = class ProductController {
             throw new common_1.NotFoundException('No barcode was provided');
         }
         if (regexes_1.ruRegex.test(String(barcode))) {
-            throw new common_1.NotFoundException('Russian product');
+            throw new common_1.NotFoundException('Rus product');
         }
         const cachedProductInfo = await this.redisService.getEctProductInfo(barcode);
         if (cachedProductInfo) {
