@@ -1,1 +1,1 @@
-export declare const ruRegex: RegExp;
+export declare const rusProductRegex: RegExp;

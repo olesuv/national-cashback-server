@@ -1,2 +1,1 @@
-const rusProductRegex = '/^46*/i';
-export const ruRegex = new RegExp(rusProductRegex);
+export const rusProductRegex = new RegExp('^46.*', 'i');

@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ruRegex = void 0;
-const rusProductRegex = '/^46*/i';
-exports.ruRegex = new RegExp(rusProductRegex);
+exports.rusProductRegex = void 0;
+exports.rusProductRegex = new RegExp('^46.*', 'i');
 //# sourceMappingURL=regexes.js.map
