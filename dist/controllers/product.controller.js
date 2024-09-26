@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const product_service_1 = require("../services/product.service");
 const product_1 = require("../constants/product");
 const redis_service_1 = require("../services/redis.service");
+const regexes_1 = require("../constants/regexes");
 let ProductController = class ProductController {
     constructor(productService, redisService) {
         this.productService = productService;
@@ -25,6 +26,9 @@ let ProductController = class ProductController {
     async searchByBarcode(userBarcode) {
         if (!userBarcode) {
             throw new common_1.NotFoundException('No barcode was provided');
+        }
+        else if (regexes_1.rusProductRegex.test(String(userBarcode))) {
+            throw new common_1.NotFoundException('Rus product');
         }
         const cachedRes = await this.redisService.getBarcodeResults(userBarcode);
         if (cachedRes) {
@@ -40,6 +44,9 @@ let ProductController = class ProductController {
     async searchProducts(name, limit, offset) {
         if (!name) {
             throw new common_1.NotFoundException('No search text was provided');
+        }
+        else if (regexes_1.rusProductRegex.test(name)) {
+            throw new common_1.NotFoundException('Rus product');
         }
         const parsedLimit = limit ? parseInt(limit, 10) : product_1.searchDefaultParams.limit;
         const parsedOffset = offset ? parseInt(offset, 10) : product_1.searchDefaultParams.offset;
@@ -57,6 +64,9 @@ let ProductController = class ProductController {
     async searchEctProductInfo(barcode) {
         if (!barcode) {
             throw new common_1.NotFoundException('No barcode was provided');
+        }
+        else if (regexes_1.rusProductRegex.test(String(barcode))) {
+            throw new common_1.NotFoundException('Rus product');
         }
         const cachedProductInfo = await this.redisService.getEctProductInfo(barcode);
         if (cachedProductInfo) {
