@@ -3,6 +3,7 @@ import { ProductService } from '../services/product.service';
 import { Product } from '../models/products.entity';
 import { searchDefaultParams } from '../constants/product';
 import { RedisService } from 'src/services/redis.service';
+import { ruRegex } from 'src/constants/regexes';
 
 @Controller('products')
 export class ProductController {
@@ -15,6 +16,9 @@ export class ProductController {
   async searchByBarcode(@Query('barcode') userBarcode: number): Promise<Product> {
     if (!userBarcode) {
       throw new NotFoundException('No barcode was provided');
+    }
+    if (ruRegex.test(String(userBarcode))) {
+      throw new NotFoundException('Russian product');
     }
 
     const cachedRes = await this.redisService.getBarcodeResults(userBarcode);
@@ -41,6 +45,9 @@ export class ProductController {
     if (!name) {
       throw new NotFoundException('No search text was provided');
     }
+    if (ruRegex.test(name)) {
+      throw new NotFoundException('Russian product');
+    }
 
     const parsedLimit = limit ? parseInt(limit, 10) : searchDefaultParams.limit;
     const parsedOffset = offset ? parseInt(offset, 10) : searchDefaultParams.offset;
@@ -64,6 +71,9 @@ export class ProductController {
   async searchEctProductInfo(@Query('barcode') barcode: number): Promise<Partial<Product>> {
     if (!barcode) {
       throw new NotFoundException('No barcode was provided');
+    }
+    if (ruRegex.test(String(barcode))) {
+      throw new NotFoundException('Russian product');
     }
 
     const cachedProductInfo = await this.redisService.getEctProductInfo(barcode);
