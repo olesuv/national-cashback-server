@@ -1,10 +1,10 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
-import { CSVtoSQLMigration } from '../../utils/csv.to.sql';
-import { MigrateToSQLDTO, PARSE_URLS, TabeleNames } from 'src/constants/csv.to.sql';
-import { MigrationLogService } from '../migration.log.service';
-import { ProductService } from '../product.service';
+import { CSVtoSQLMigration } from '../../utils/csv-to-sql';
+import { MigrateToSQLDTO, PARSE_URLS, TabeleNames } from 'src/constants/csv-to-sql';
+import { MigrationLogService } from '../microservices/migration-log.service';
+import { ProductService } from '../db/product.service';
 
 export interface ICsvInfo {
   fileUrl: string;
@@ -34,9 +34,9 @@ export class MigrationService implements OnModuleInit {
     await this.runMigrations();
   }
 
-  @Cron('0 3 * * 6') // 3 am each 6 days
+  @Cron('0 0 3 * * 6') // 3 am each 6 days
   async runDailyMigration() {
-    console.log('Started daily migration');
+    console.log('Started scheduled migration (csv to sql)...');
     await this.runMigrations();
   }
 

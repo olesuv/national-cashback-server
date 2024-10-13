@@ -14,14 +14,15 @@ const cache_manager_1 = require("@nestjs/cache-manager");
 const migration_log_entity_1 = require("./models/migration.log.entity");
 const products_entity_1 = require("./models/products.entity");
 const migration_service_1 = require("./services/jobs/migration.service");
-const migration_log_service_1 = require("./services/migration.log.service");
-const product_service_1 = require("./services/product.service");
-const redis_config_service_1 = require("./services/redis.config.service");
-const redis_service_1 = require("./services/redis.service");
+const migration_log_service_1 = require("./services/microservices/migration-log.service");
+const product_service_1 = require("./services/db/product.service");
+const redis_config_service_1 = require("./services/configs/redis.config.service");
+const redis_service_1 = require("./services/microservices/redis.service");
 const app_controller_1 = require("./controllers/app.controller");
 const product_controller_1 = require("./controllers/product.controller");
 const env_1 = require("./configs/env");
-const middleware_1 = require("./middleware");
+const middleware_1 = require("./utils/middleware");
+const product_api_service_1 = require("./services/api/product-api.service");
 let AppModule = class AppModule {
     configure(consumer) {
         consumer.apply(middleware_1.RateLimitMiddleware).forRoutes('*');
@@ -50,7 +51,14 @@ exports.AppModule = AppModule = __decorate([
             schedule_1.ScheduleModule.forRoot(),
         ],
         controllers: [app_controller_1.AppController, product_controller_1.ProductController],
-        providers: [migration_service_1.MigrationService, migration_log_service_1.MigrationLogService, product_service_1.ProductService, redis_service_1.RedisService, redis_config_service_1.CacheConfigService],
+        providers: [
+            migration_service_1.MigrationService,
+            migration_log_service_1.MigrationLogService,
+            product_service_1.ProductService,
+            redis_service_1.RedisService,
+            redis_config_service_1.CacheConfigService,
+            product_api_service_1.ProductApiService,
+        ],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

@@ -12,10 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MigrationService = void 0;
 const common_1 = require("@nestjs/common");
 const schedule_1 = require("@nestjs/schedule");
-const csv_to_sql_1 = require("../../utils/csv.to.sql");
-const csv_to_sql_2 = require("../../constants/csv.to.sql");
-const migration_log_service_1 = require("../migration.log.service");
-const product_service_1 = require("../product.service");
+const csv_to_sql_1 = require("../../utils/csv-to-sql");
+const csv_to_sql_2 = require("../../constants/csv-to-sql");
+const migration_log_service_1 = require("../microservices/migration-log.service");
+const product_service_1 = require("../db/product.service");
 let MigrationService = class MigrationService {
     constructor(migrationLogService, productService) {
         this.migrationLogService = migrationLogService;
@@ -36,7 +36,7 @@ let MigrationService = class MigrationService {
         await this.runMigrations();
     }
     async runDailyMigration() {
-        console.log('Started daily migration');
+        console.log('Started scheduled migration (csv to sql)...');
         await this.runMigrations();
     }
     async runMigration(csvInfo) {
@@ -57,7 +57,7 @@ let MigrationService = class MigrationService {
 };
 exports.MigrationService = MigrationService;
 __decorate([
-    (0, schedule_1.Cron)('0 3 * * 6'),
+    (0, schedule_1.Cron)('0 0 3 * * 6'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

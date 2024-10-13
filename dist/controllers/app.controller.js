@@ -14,7 +14,7 @@ const common_1 = require("@nestjs/common");
 let AppController = class AppController {
     constructor() { }
     getHello() {
-        return 'wassup to national cashback server';
+        return 'wassup from national cashback server';
     }
 };
 exports.AppController = AppController;

@@ -7,16 +7,17 @@ import { MigrationLog } from './models/migration.log.entity';
 import { Product } from './models/products.entity';
 
 import { MigrationService } from './services/jobs/migration.service';
-import { MigrationLogService } from './services/migration.log.service';
-import { ProductService } from './services/product.service';
-import { CacheConfigService } from './services/redis.config.service';
-import { RedisService } from './services/redis.service';
+import { MigrationLogService } from './services/microservices/migration-log.service';
+import { ProductService } from './services/db/product.service';
+import { CacheConfigService } from './services/configs/redis.config.service';
+import { RedisService } from './services/microservices/redis.service';
 
 import { AppController } from './controllers/app.controller';
 import { ProductController } from './controllers/product.controller';
 
 import { EnvConfigs } from './configs/env';
-import { RateLimitMiddleware } from './middleware';
+import { RateLimitMiddleware } from 'src/utils/middleware';
+import { ProductApiService } from './services/api/product-api.service';
 
 @Module({
   imports: [
@@ -40,7 +41,14 @@ import { RateLimitMiddleware } from './middleware';
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController, ProductController],
-  providers: [MigrationService, MigrationLogService, ProductService, RedisService, CacheConfigService],
+  providers: [
+    MigrationService,
+    MigrationLogService,
+    ProductService,
+    RedisService,
+    CacheConfigService,
+    ProductApiService,
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
