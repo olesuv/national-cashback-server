@@ -3,8 +3,8 @@ import { parse } from 'fast-csv';
 import { Readable } from 'stream';
 import axios from 'axios';
 
-import { MigrationLogService } from 'src/services/migration.log.service';
-import { ProductService } from 'src/services/product.service';
+import { MigrationLogService } from 'src/services/microservices/migration-log.service';
+import { ProductService } from 'src/services/db/product.service';
 import {
   ColumnNames,
   MigrateToSQLDTO,

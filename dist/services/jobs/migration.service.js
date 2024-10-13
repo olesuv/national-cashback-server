@@ -14,8 +14,8 @@ const common_1 = require("@nestjs/common");
 const schedule_1 = require("@nestjs/schedule");
 const csv_to_sql_1 = require("../../utils/csv.to.sql");
 const csv_to_sql_2 = require("../../constants/csv-to-sql");
-const migration_log_service_1 = require("../migration.log.service");
-const product_service_1 = require("../product.service");
+const migration_log_service_1 = require("../microservices/migration-log.service");
+const product_service_1 = require("../db/product.service");
 let MigrationService = class MigrationService {
     constructor(migrationLogService, productService) {
         this.migrationLogService = migrationLogService;

@@ -3,8 +3,8 @@ import { Cron } from '@nestjs/schedule';
 
 import { CSVtoSQLMigration } from '../../utils/csv.to.sql';
 import { MigrateToSQLDTO, PARSE_URLS, TabeleNames } from 'src/constants/csv-to-sql';
-import { MigrationLogService } from '../migration.log.service';
-import { ProductService } from '../product.service';
+import { MigrationLogService } from '../microservices/migration-log.service';
+import { ProductService } from '../db/product.service';
 
 export interface ICsvInfo {
   fileUrl: string;

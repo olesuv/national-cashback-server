@@ -1,6 +1,6 @@
 import { OnModuleInit } from '@nestjs/common';
-import { MigrationLogService } from '../migration.log.service';
-import { ProductService } from '../product.service';
+import { MigrationLogService } from '../microservices/migration-log.service';
+import { ProductService } from '../db/product.service';
 export interface ICsvInfo {
     fileUrl: string;
     tableNames: string[];

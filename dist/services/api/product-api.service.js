@@ -11,8 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProductApiService = void 0;
 const common_1 = require("@nestjs/common");
-const product_service_1 = require("../product.service");
-const redis_service_1 = require("../redis.service");
+const product_service_1 = require("../db/product.service");
+const redis_service_1 = require("../microservices/redis.service");
 const search_errors_1 = require("../../constants/errors/search-errors");
 const search_product_1 = require("../../constants/api/search-product");
 let ProductApiService = class ProductApiService {

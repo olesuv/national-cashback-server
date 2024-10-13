@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ProductService } from '../product.service';
-import { RedisService } from '../redis.service';
+import { ProductService } from '../db/product.service';
+import { RedisService } from '../microservices/redis.service';
 import { rusProductRegex } from 'src/constants/errors/search-errors';
 import { Product } from 'src/models/products.entity';
 import { searchDefaultParams } from 'src/constants/api/search-product';

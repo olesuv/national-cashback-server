@@ -1,5 +1,5 @@
-import { ProductService } from '../product.service';
-import { RedisService } from '../redis.service';
+import { ProductService } from '../db/product.service';
+import { RedisService } from '../microservices/redis.service';
 import { Product } from 'src/models/products.entity';
 import { SarchByNameDTO } from 'src/dto/api/search-name.dto';
 import { SearchEctInfoDTO } from 'src/dto/api/search-ect.dto';

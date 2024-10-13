@@ -8,7 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CacheConfigService = void 0;
 const common_1 = require("@nestjs/common");
-const redis_config_1 = require("../constants/redis-config");
+const redis_config_1 = require("../../constants/redis-config");
 let CacheConfigService = class CacheConfigService {
     createCacheOptions() {
         return {

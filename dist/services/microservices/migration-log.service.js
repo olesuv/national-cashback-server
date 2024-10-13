@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MigrationLogService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
-const migration_log_entity_1 = require("../models/migration.log.entity");
+const migration_log_entity_1 = require("../../models/migration.log.entity");
 const typeorm_2 = require("typeorm");
 let MigrationLogService = class MigrationLogService {
     constructor(migrationLogRepo) {
@@ -52,4 +52,4 @@ exports.MigrationLogService = MigrationLogService = __decorate([
     __param(0, (0, typeorm_1.InjectRepository)(migration_log_entity_1.MigrationLog)),
     __metadata("design:paramtypes", [typeorm_2.Repository])
 ], MigrationLogService);
-//# sourceMappingURL=migration.log.service.js.map
+//# sourceMappingURL=migration-log.service.js.map

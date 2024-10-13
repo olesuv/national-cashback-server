@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { Product } from '../models/products.entity';
+import { Product } from '../../models/products.entity';
 export interface ReindexDTO {
     tableName: string;
     columnNames: string[];

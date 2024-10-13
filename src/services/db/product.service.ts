@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Product } from '../models/products.entity';
+import { Product } from '../../models/products.entity';
 import { EXT_INFO_COLUMNS, SEARCH_COLUMNS } from 'src/constants/db-queries';
 
 export interface ReindexDTO {
