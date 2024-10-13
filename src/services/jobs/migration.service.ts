@@ -34,9 +34,9 @@ export class MigrationService implements OnModuleInit {
     await this.runMigrations();
   }
 
-  @Cron('0 3 * * 6') // 3 am each 6 days
+  @Cron('0 0 3 * * 6') // 3 am each 6 days
   async runDailyMigration() {
-    console.log('Started daily migration');
+    console.log('Started scheduled migration (csv to sql)...');
     await this.runMigrations();
   }
 

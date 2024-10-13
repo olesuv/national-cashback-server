@@ -36,7 +36,7 @@ let MigrationService = class MigrationService {
         await this.runMigrations();
     }
     async runDailyMigration() {
-        console.log('Started daily migration');
+        console.log('Started scheduled migration (csv to sql)...');
         await this.runMigrations();
     }
     async runMigration(csvInfo) {
@@ -57,7 +57,7 @@ let MigrationService = class MigrationService {
 };
 exports.MigrationService = MigrationService;
 __decorate([
-    (0, schedule_1.Cron)('0 3 * * 6'),
+    (0, schedule_1.Cron)('0 0 3 * * 6'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
