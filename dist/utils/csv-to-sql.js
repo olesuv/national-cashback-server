@@ -123,4 +123,4 @@ class CSVtoSQLMigration {
     }
 }
 exports.CSVtoSQLMigration = CSVtoSQLMigration;
-//# sourceMappingURL=csv.to.sql.js.map
+//# sourceMappingURL=csv-to-sql.js.map

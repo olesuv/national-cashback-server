@@ -16,7 +16,7 @@ import { AppController } from './controllers/app.controller';
 import { ProductController } from './controllers/product.controller';
 
 import { EnvConfigs } from './configs/env';
-import { RateLimitMiddleware } from './middleware';
+import { RateLimitMiddleware } from 'src/utils/middleware';
 import { ProductApiService } from './services/api/product-api.service';
 
 @Module({

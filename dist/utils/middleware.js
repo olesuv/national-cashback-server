@@ -8,7 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RateLimitMiddleware = void 0;
 const common_1 = require("@nestjs/common");
-const middleware_1 = require("./constants/middleware");
+const middleware_1 = require("../constants/middleware");
 let RateLimitMiddleware = class RateLimitMiddleware {
     constructor() {
         this.requests = new Map();

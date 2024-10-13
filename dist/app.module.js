@@ -21,7 +21,7 @@ const redis_service_1 = require("./services/microservices/redis.service");
 const app_controller_1 = require("./controllers/app.controller");
 const product_controller_1 = require("./controllers/product.controller");
 const env_1 = require("./configs/env");
-const middleware_1 = require("./middleware");
+const middleware_1 = require("./utils/middleware");
 const product_api_service_1 = require("./services/api/product-api.service");
 let AppModule = class AppModule {
     configure(consumer) {

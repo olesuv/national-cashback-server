@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
-import { CSVtoSQLMigration } from '../../utils/csv.to.sql';
+import { CSVtoSQLMigration } from '../../utils/csv-to-sql';
 import { MigrateToSQLDTO, PARSE_URLS, TabeleNames } from 'src/constants/csv-to-sql';
 import { MigrationLogService } from '../microservices/migration-log.service';
 import { ProductService } from '../db/product.service';

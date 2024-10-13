@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
-import { MiddlewareConfigs } from './constants/middleware';
+import { MiddlewareConfigs } from 'src/constants/middleware';
 
 @Injectable()
 export class RateLimitMiddleware implements NestMiddleware {

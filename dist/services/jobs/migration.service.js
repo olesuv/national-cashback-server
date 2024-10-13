@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MigrationService = void 0;
 const common_1 = require("@nestjs/common");
 const schedule_1 = require("@nestjs/schedule");
-const csv_to_sql_1 = require("../../utils/csv.to.sql");
+const csv_to_sql_1 = require("../../utils/csv-to-sql");
 const csv_to_sql_2 = require("../../constants/csv-to-sql");
 const migration_log_service_1 = require("../microservices/migration-log.service");
 const product_service_1 = require("../db/product.service");
