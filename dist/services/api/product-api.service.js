@@ -13,8 +13,8 @@ exports.ProductApiService = void 0;
 const common_1 = require("@nestjs/common");
 const product_service_1 = require("../product.service");
 const redis_service_1 = require("../redis.service");
-const regexes_1 = require("../../constants/regexes");
-const product_1 = require("../../constants/product");
+const search_errors_1 = require("../../constants/errors/search-errors");
+const search_product_1 = require("../../constants/api/search-product");
 let ProductApiService = class ProductApiService {
     constructor(productService, redisService) {
         this.productService = productService;
@@ -24,7 +24,7 @@ let ProductApiService = class ProductApiService {
         if (!userInputs.barcode) {
             throw new common_1.NotFoundException('No barcode was provided');
         }
-        else if (regexes_1.rusProductRegex.test(String(userInputs.barcode))) {
+        else if (search_errors_1.rusProductRegex.test(String(userInputs.barcode))) {
             throw new common_1.NotFoundException('Rus product');
         }
         const cachedRes = await this.redisService.getBarcodeResults(userInputs.barcode);
@@ -42,11 +42,11 @@ let ProductApiService = class ProductApiService {
         if (!userInputs.name) {
             throw new common_1.NotFoundException('No search text was provided');
         }
-        else if (regexes_1.rusProductRegex.test(userInputs.name)) {
+        else if (search_errors_1.rusProductRegex.test(userInputs.name)) {
             throw new common_1.NotFoundException('Rus product');
         }
-        const parsedLimit = userInputs.limit ? parseInt(userInputs.limit, 10) : product_1.searchDefaultParams.limit;
-        const parsedOffset = userInputs.offset ? parseInt(userInputs.offset, 10) : product_1.searchDefaultParams.offset;
+        const parsedLimit = userInputs.limit ? parseInt(userInputs.limit, 10) : search_product_1.searchDefaultParams.limit;
+        const parsedOffset = userInputs.offset ? parseInt(userInputs.offset, 10) : search_product_1.searchDefaultParams.offset;
         const cachedRes = await this.redisService.getSearchResults(userInputs.name, parsedLimit, parsedOffset);
         if (cachedRes) {
             return cachedRes;
@@ -62,7 +62,7 @@ let ProductApiService = class ProductApiService {
         if (!userInputs.barcode) {
             throw new common_1.NotFoundException('No barcode was provided');
         }
-        else if (regexes_1.rusProductRegex.test(String(userInputs.barcode))) {
+        else if (search_errors_1.rusProductRegex.test(String(userInputs.barcode))) {
             throw new common_1.NotFoundException('Rus product');
         }
         const cachedProductInfo = await this.redisService.getEctProductInfo(userInputs.barcode);

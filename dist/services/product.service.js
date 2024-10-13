@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const products_entity_1 = require("../models/products.entity");
-const db_queries_1 = require("../constants/db.queries");
+const db_queries_1 = require("../constants/db-queries");
 let ProductService = class ProductService {
     constructor(productRepository) {
         this.productRepository = productRepository;

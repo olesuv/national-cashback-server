@@ -1,6 +1,6 @@
 import { MigrationLogService } from 'src/services/migration.log.service';
 import { ProductService } from 'src/services/product.service';
-import { MigrateToSQLDTO } from 'src/constants/csv.to.sql';
+import { MigrateToSQLDTO } from 'src/constants/csv-to-sql';
 export declare class CSVtoSQLMigration {
     private readonly migrationLogService;
     private readonly productService;

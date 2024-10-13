@@ -5,4 +5,4 @@ exports.searchDefaultParams = {
     limit: 20,
     offset: 0,
 };
-//# sourceMappingURL=product.js.map
+//# sourceMappingURL=search-product.js.map

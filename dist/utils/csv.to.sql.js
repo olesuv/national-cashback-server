@@ -4,8 +4,8 @@ exports.CSVtoSQLMigration = void 0;
 const supabase_js_1 = require("@supabase/supabase-js");
 const fast_csv_1 = require("fast-csv");
 const axios_1 = require("axios");
-const csv_to_sql_1 = require("../constants/csv.to.sql");
-const supabase_errors_1 = require("../constants/supabase.errors");
+const csv_to_sql_1 = require("../constants/csv-to-sql");
+const supabase_errors_1 = require("../constants/errors/supabase-errors");
 class CSVtoSQLMigration {
     constructor(migrationLogService, productService) {
         this.migrationLogService = migrationLogService;

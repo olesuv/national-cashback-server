@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { ProductService } from '../product.service';
 import { RedisService } from '../redis.service';
-import { rusProductRegex } from 'src/constants/regexes';
+import { rusProductRegex } from 'src/constants/errors/search-errors';
 import { Product } from 'src/models/products.entity';
-import { searchDefaultParams } from '../../constants/product';
+import { searchDefaultParams } from 'src/constants/api/search-product';
 import { SarchByNameDTO } from 'src/dto/api/search-name.dto';
 import { SearchEctInfoDTO } from 'src/dto/api/search-ect.dto';
 import { SearchByBarcodeDTO } from 'src/dto/api/search-barcode.dto';

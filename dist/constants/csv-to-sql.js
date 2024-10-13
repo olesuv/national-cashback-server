@@ -37,4 +37,4 @@ exports.PARSE_URLS = {
     productsUrl: 'https://madeinukraine.gov.ua/files/perelik-tovariv/products.csv',
     sellersUrl: 'https://madeinukraine.gov.ua/files/perelik-prodavtsiv/perelik-prodavtsiv.csv',
 };
-//# sourceMappingURL=csv.to.sql.js.map
+//# sourceMappingURL=csv-to-sql.js.map

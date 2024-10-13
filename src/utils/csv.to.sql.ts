@@ -11,8 +11,8 @@ import {
   productsdHeaderMap,
   sellersHeaderMap,
   TabeleNames,
-} from 'src/constants/csv.to.sql';
-import { DuplicateValuesErrorCode } from 'src/constants/supabase.errors';
+} from 'src/constants/csv-to-sql';
+import { DuplicateValuesErrorCode } from 'src/constants/errors/supabase-errors';
 
 export class CSVtoSQLMigration {
   private supabase: any;
