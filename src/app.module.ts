@@ -17,6 +17,7 @@ import { ProductController } from './controllers/product.controller';
 
 import { EnvConfigs } from './configs/env';
 import { RateLimitMiddleware } from './middleware';
+import { ProductApiService } from './services/api/product-api.service';
 
 @Module({
   imports: [
@@ -40,7 +41,14 @@ import { RateLimitMiddleware } from './middleware';
     ScheduleModule.forRoot(),
   ],
   controllers: [AppController, ProductController],
-  providers: [MigrationService, MigrationLogService, ProductService, RedisService, CacheConfigService],
+  providers: [
+    MigrationService,
+    MigrationLogService,
+    ProductService,
+    RedisService,
+    CacheConfigService,
+    ProductApiService,
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

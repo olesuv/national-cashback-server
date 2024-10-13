@@ -6,6 +6,6 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    return 'wassup to national cashback server';
+    return 'wassup from national cashback server';
   }
 }
