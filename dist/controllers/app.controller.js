@@ -11,21 +11,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
+const utils_1 = require("../constants/api/utils");
+const migration_service_1 = require("../services/jobs/migration.service");
+const timeout_interceptor_1 = require("../utils/timeout.interceptor");
 let AppController = class AppController {
-    constructor() { }
-    getHello() {
+    constructor(csvToSqlService) {
+        this.csvToSqlService = csvToSqlService;
+    }
+    async getHello() {
+        await this.csvToSqlService.runDailyMigration();
         return 'wassup from national cashback server';
     }
 };
 exports.AppController = AppController;
 __decorate([
     (0, common_1.Get)(),
+    (0, common_1.UseInterceptors)(new timeout_interceptor_1.TimeoutInterceptor(utils_1.MIGRATION_REQ_TIMEOUT)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", String)
+    __metadata("design:returntype", Promise)
 ], AppController.prototype, "getHello", null);
 exports.AppController = AppController = __decorate([
     (0, common_1.Controller)(),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [migration_service_1.MigrationService])
 ], AppController);
 //# sourceMappingURL=app.controller.js.map
