@@ -16,7 +16,7 @@
   "crons": [
     {
       "name": "csv-to-sql-migration",
-      "schedule": " 0 3 * * 6",
+      "schedule": "0 3 * * 6",
       "path": "/"
     }
   ]
