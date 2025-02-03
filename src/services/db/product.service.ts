@@ -13,7 +13,7 @@ export interface ReindexDTO {
 export class ProductService {
   constructor(
     @InjectRepository(Product)
-    private productRepository: Repository<Product>,
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   async findByBarcode(barcode: number): Promise<Product | undefined> {

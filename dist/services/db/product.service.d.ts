@@ -5,7 +5,7 @@ export interface ReindexDTO {
     columnNames: string[];
 }
 export declare class ProductService {
-    private productRepository;
+    private readonly productRepository;
     constructor(productRepository: Repository<Product>);
     findByBarcode(barcode: number): Promise<Product | undefined>;
     findByBrand(brand: string): Promise<Product[]>;

@@ -4,10 +4,10 @@ interface IMigrationLogDTO {
     tableName: string;
 }
 export declare class MigrationLogService {
-    private migrationLogRepo;
+    private readonly migrationLogRepo;
     constructor(migrationLogRepo: Repository<MigrationLog>);
     createMigrationLog(createMigrationLog: IMigrationLogDTO): Promise<MigrationLog>;
     updateMigrationLog(migrationLog: IMigrationLogDTO): Promise<MigrationLog>;
-    findByTableName(migrationLog: IMigrationLogDTO): Promise<MigrationLog>;
+    findByTableName(migrationLog: IMigrationLogDTO): Promise<MigrationLog | null>;
 }
 export {};

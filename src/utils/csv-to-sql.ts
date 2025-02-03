@@ -15,7 +15,7 @@ import {
 import { DuplicateValuesErrorCode } from 'src/constants/errors/supabase-errors';
 
 export class CSVtoSQLMigration {
-  private supabase: any;
+  private readonly supabase: any;
   private readonly batchSize: number = 1000;
 
   constructor(

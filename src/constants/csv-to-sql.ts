@@ -38,6 +38,6 @@ export enum TabeleNames {
 }
 
 export const PARSE_URLS = {
-  productsUrl: 'https://madeinukraine.gov.ua/files/perelik-tovariv/products.csv',
-  sellersUrl: 'https://madeinukraine.gov.ua/files/perelik-prodavtsiv/perelik-prodavtsiv.csv',
+  productsUrl: 'https://api.madeinukraine.gov.ua/storage/exports/products.csv',
+  sellersUrl: 'https://api.madeinukraine.gov.ua/storage/exports/perelik-prodavtsiv.csv',
 };

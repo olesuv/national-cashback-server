@@ -5,7 +5,7 @@ import { Product } from 'src/models/products.entity';
 
 @Injectable()
 export class RedisService {
-  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+  constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
   async getBarcodeResults(searchedBarcode: number): Promise<Product | null> {
     const cachedRes = await this.cacheManager.get<Product>(`barcode_${searchedBarcode}`);

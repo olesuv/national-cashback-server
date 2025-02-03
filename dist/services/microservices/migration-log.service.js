@@ -22,8 +22,8 @@ let MigrationLogService = class MigrationLogService {
         this.migrationLogRepo = migrationLogRepo;
     }
     async createMigrationLog(createMigrationLog) {
-        const mbCreated = await this.findByTableName(createMigrationLog);
-        if (mbCreated) {
+        const existingLog = await this.findByTableName(createMigrationLog);
+        if (existingLog) {
             return await this.updateMigrationLog(createMigrationLog);
         }
         const newMigrationLog = this.migrationLogRepo.create({
@@ -40,9 +40,6 @@ let MigrationLogService = class MigrationLogService {
         const findMigrationLog = await this.migrationLogRepo.findOne({
             where: { tableName: migrationLog.tableName },
         });
-        if (!findMigrationLog) {
-            throw new common_1.NotFoundException(`Migration log for file ${migrationLog.tableName} not found`);
-        }
         return findMigrationLog;
     }
 };

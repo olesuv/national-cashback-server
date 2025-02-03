@@ -1,7 +1,7 @@
 import { Cache } from 'cache-manager';
 import { Product } from 'src/models/products.entity';
 export declare class RedisService {
-    private cacheManager;
+    private readonly cacheManager;
     constructor(cacheManager: Cache);
     getBarcodeResults(searchedBarcode: number): Promise<Product | null>;
     insertBarcodeResults(searchedBarcode: number, barcodeData: Product): Promise<void>;

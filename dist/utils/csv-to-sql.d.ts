@@ -4,7 +4,7 @@ import { MigrateToSQLDTO } from 'src/constants/csv-to-sql';
 export declare class CSVtoSQLMigration {
     private readonly migrationLogService;
     private readonly productService;
-    private supabase;
+    private readonly supabase;
     private readonly batchSize;
     constructor(migrationLogService: MigrationLogService, productService: ProductService);
     migrateToSQL(migrationInfo: MigrateToSQLDTO): Promise<void>;
